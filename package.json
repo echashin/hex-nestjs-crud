@@ -1,8 +1,9 @@
 {
-  "name": "nestjs-crud",
+  "name": "@echashin/nestjs-crud",
   "version": "1.0.0",
   "description": "Easy way to work with cruds",
   "main": "lib/index.js",
+  "private": false,
   "files": [
     "lib"
   ],
@@ -23,7 +24,7 @@
     "postgresql"
   ],
   "author": "Evgeny Chashin",
-  "license": "MIT",
+  "license": "ISC",
   "bugs": {
     "url": "https://github.com/echashin/nestjs-crud/issues"
   },
