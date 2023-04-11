@@ -1,0 +1,30 @@
+{
+  "name": "nestjs-crud",
+  "version": "1.0.0",
+  "description": "Easy way to work with cruds",
+  "main": "lib/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/echashin/nestjs-crud.git"
+  },
+  "keywords": [
+    "nestjs",
+    "typeorm",
+    "crud",
+    "nodejs",
+    "typescript",
+    "postgresql"
+  ],
+  "author": "Evgeny Chashin",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/echashin/nestjs-crud/issues"
+  },
+  "homepage": "https://github.com/echashin/nestjs-crud#readme",
+  "dependencies": {
+    "typeorm": "0.3.14"
+  }
+}

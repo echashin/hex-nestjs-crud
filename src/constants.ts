@@ -1,0 +1,2 @@
+export const PARSED_CRUD_REQUEST_KEY: string =
+  "BRINGOO_PARSED_CRUD_REQUEST_KEY";
