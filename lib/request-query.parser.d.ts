@@ -1,0 +1,40 @@
+import { ParamsOptions } from "./interfaces/params-options.interface";
+import { ParsedRequestParams } from "./interfaces/parsed-request.interface";
+import { QueryFields, QueryFilter, QueryJoin, QuerySort, SCondition, SConditionAND, SFields } from "./types/request-query.types";
+export declare class RequestQueryParser implements ParsedRequestParams {
+    fields: QueryFields;
+    paramsFilter: QueryFilter[];
+    search: SCondition;
+    filter: QueryFilter[];
+    or: QueryFilter[];
+    join: QueryJoin[];
+    sort: QuerySort[];
+    limit: number;
+    offset: number;
+    page: number;
+    cache: number;
+    includeDeleted: number;
+    private _params;
+    private _query;
+    private _paramNames;
+    private _paramsOptions;
+    private get _options();
+    static create(): RequestQueryParser;
+    getParsed(): ParsedRequestParams;
+    parseQuery(query: any): this;
+    parseParams(params: any, options: ParamsOptions): this;
+    convertFilterToSearch(filter: QueryFilter): SFields | SConditionAND;
+    private getParamNames;
+    private getParamValues;
+    private parseQueryParam;
+    private parseValue;
+    private parseValues;
+    private fieldsParser;
+    private parseSearchQueryParam;
+    private conditionParser;
+    private joinParser;
+    private sortParser;
+    private numericParser;
+    private paramParser;
+}
+//# sourceMappingURL=request-query.parser.d.ts.map

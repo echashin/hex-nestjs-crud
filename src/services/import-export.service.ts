@@ -6,8 +6,8 @@ import {
 import dot from "dot-object";
 import * as XLSX from "xlsx";
 
-import { TransferFileTypeEnum } from "../../shared/enums/transfer-file-type.enum";
-import { LangCodeListType } from "../../shared/types/lang-code-list.type";
+
+import {TransferFileTypeEnum} from "../enums/transfer-file-type.enum";
 
 @Injectable()
 export class ImportExportService {
@@ -77,7 +77,8 @@ export class ImportExportService {
     const reg: RegExp = new RegExp(`_i18n$`);
     const keys: string[] = Object.keys(items[0]);
     const multilang: string[] = keys.filter((key: string) => reg.test(key));
-    const empty_i18n: LangCodeListType = {
+
+    const empty_i18n: Object = {
       DE: "",
       EN: "",
       FR: "",

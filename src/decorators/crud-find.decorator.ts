@@ -7,8 +7,7 @@ import {
 } from "@nestjs/common";
 import { ApiExtraModels, ApiOperation, ApiQuery } from "@nestjs/swagger";
 
-import { AclAction } from "../../acl/decorators/acl-action.decorator";
-import { LangCodeEnum } from "../../shared/enums/lang-code.enum";
+
 import { CrudRequestInterceptor } from "../interceptors/crud-request.interceptor";
 import { CrudRequestSoftDeleteInterceptor } from "../interceptors/crud-request-soft-delete.interceptor";
 import { ApiPaginatedResponse } from "./api-paginated-response";
@@ -18,7 +17,6 @@ export const CrudFind: any = <TModel extends Type<any>>(
   path: string = ""
 ) => {
   return applyDecorators(
-    AclAction("CRUD_FIND", `Retrieve multiple items ${entity.name}[]`),
     Get(path),
     ApiPaginatedResponse(entity),
     ApiExtraModels(entity),
@@ -103,14 +101,5 @@ export const CrudFind: any = <TModel extends Type<any>>(
       type: Boolean,
       description: "Load deleted items",
     }),
-    ApiQuery({
-      name: "lang",
-      required: false,
-      type: "enum",
-      enum: LangCodeEnum,
-      enumName: "LangCodeEnum",
-      description: "Language. Default EN",
-      example: LangCodeEnum.en,
-    })
   );
 };

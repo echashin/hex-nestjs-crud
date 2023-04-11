@@ -12,14 +12,11 @@ import {
   getSchemaPath,
 } from "@nestjs/swagger";
 
-import { AclAction } from "../../acl/decorators/acl-action.decorator";
-import { LangCodeEnum } from "../../shared/enums/lang-code.enum";
 import { CrudRequestInterceptor } from "../interceptors/crud-request.interceptor";
 import { CrudRequestSoftDeleteInterceptor } from "../interceptors/crud-request-soft-delete.interceptor";
 
 export const CrudFindOne: any = <TModel extends Type<any>>(entity: TModel) => {
   return applyDecorators(
-    AclAction("CRUD_FIND_ONE", `Retrieve one item ${entity.name}`),
     Get(":id"),
     ApiOperation({
       summary: `Retrieve one item ${entity.name}`,
@@ -59,13 +56,5 @@ export const CrudFindOne: any = <TModel extends Type<any>>(entity: TModel) => {
       type: Boolean,
       description: "Load deleted items",
     }),
-    ApiQuery({
-      name: "lang",
-      required: false,
-      type: "enum",
-      enum: LangCodeEnum,
-      enumName: "LangCodeEnum",
-      description: "Language. Default EN",
-    })
   );
 };

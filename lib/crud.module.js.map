@@ -1,0 +1,1 @@
+{"version":3,"file":"crud.module.js","sourceRoot":"","sources":["../src/crud.module.ts"],"names":[],"mappings":";;;;;;;;;AAAA,2CAAwC;AAExC,4EAAuE;AAOvE,IAAa,UAAU,GAAvB,MAAa,UAAU;CAAG,CAAA;AAAb,UAAU;IALtB,IAAA,eAAM,EAAC;QACN,OAAO,EAAE,EAAE;QACX,SAAS,EAAE,CAAC,2CAAmB,CAAC;QAChC,OAAO,EAAE,CAAC,2CAAmB,CAAC;KAC/B,CAAC;GACW,UAAU,CAAG;AAAb,gCAAU"}

@@ -6,8 +6,9 @@ import {
 } from "@nestjs/common";
 import mime from "mime-types";
 import { Observable } from "rxjs";
+import {TransferFileTypeEnum} from "../enums/transfer-file-type.enum";
 
-import { TransferFileTypeEnum } from "../../shared/enums/transfer-file-type.enum";
+
 
 @Injectable()
 export class ExportContentTypeInterceptor implements NestInterceptor {
