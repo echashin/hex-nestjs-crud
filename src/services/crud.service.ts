@@ -734,6 +734,15 @@ export class CrudService<T extends { id?: string }> {
         }
     }
 
+    private prepareColumn(name:string):string{
+        const parts:string[] = name.split('.');
+        if(parts.length === 1){
+            return name;
+        }else{
+            return `${parts[0]} #>> '{`+parts.slice(1).join(',')+`}'`;
+        }
+    }
+
     private getSelect(
         query: ParsedRequestParams,
         options: QueryOptions
@@ -745,12 +754,12 @@ export class CrudService<T extends { id?: string }> {
 
         const columns: string[] =
             query.fields && query.fields.length > 0
-                ? query.fields.filter((field: string) => allowed.includes(field))
+                ? query.fields.filter((field: string) => allowed.includes(field.split('.')[0]))
                 : allowed;
 
         const select: string[] = [
             ...(options.persist && options.persist.length > 0 ? options.persist : []),
-            ...columns,
+            ...columns.map((c:string)=>this.prepareColumn(c)),
             ...this.entityPrimaryColumns,
         ].map((col: string) => {
             return `${this.alias}.${col}`;

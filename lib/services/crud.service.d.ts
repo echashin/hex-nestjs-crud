@@ -44,6 +44,7 @@ export declare class CrudService<T extends {
     private builderAddBrackets;
     private builderSetWhere;
     private setSearchFieldObjectCondition;
+    private prepareColumn;
     private getSelect;
     private getSort;
     private getFieldWithAlias;
