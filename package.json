@@ -1,5 +1,5 @@
 {
-  "name": "@echashin/nestjs-crud",
+  "name": "hex-nestjs-crud",
   "version": "1.0.0",
   "description": "Easy way to work with cruds",
   "main": "lib/index.js",
@@ -26,9 +26,9 @@
   "author": "Evgeny Chashin",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/echashin/nestjs-crud/issues"
+    "url": "https://github.com/echashin/hex-nestjs-crud/issues"
   },
-  "homepage": "https://github.com/echashin/nestjs-crud#readme",
+  "homepage": "https://github.com/echashin/hex-nestjs-crud#readme",
   "dependencies": {
     "@nestjs/common": "9.4.0",
     "@nestjs/platform-express": "^9.4.0",

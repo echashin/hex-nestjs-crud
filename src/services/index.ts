@@ -1,2 +1,2 @@
 export * from "./import-export.service";
-export * from "./typeorm-crud.service";
+export * from "./crud.service";

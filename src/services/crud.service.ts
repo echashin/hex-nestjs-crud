@@ -56,7 +56,7 @@ import {UniqueInArray} from "../validators/unique-in-array";
 
 
 
-export class TypeOrmCrudService<T extends { id?: string }> {
+export class CrudService<T extends { id?: string }> {
     private entityColumns: string[];
     private entityPrimaryColumns: string[];
     private entityColumnsHash: ObjectLiteral = {};
