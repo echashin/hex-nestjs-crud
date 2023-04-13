@@ -90,17 +90,14 @@ export class CrudService<T extends { id?: string }> {
     /**
      * Get many
      * @param req
-     * @param langCode
      */
     public async getMany(
         req: CrudRequest,
-        langCode:string
     ): Promise<GetManyDefaultResponse<T> | T[]> {
         const {parsed, options} = req;
         const builder: SelectQueryBuilder<T> = await this.createBuilder(
             parsed,
             options,
-            langCode
         );
         return this.doGetMany(builder, parsed, options);
     }
@@ -108,10 +105,10 @@ export class CrudService<T extends { id?: string }> {
     /**
      * Get one
      * @param req
-     * @param langCode
+     * 
      */
-    public async getOne(req: CrudRequest, langCode: string): Promise<T> {
-        return this.getOneOrFail(req, langCode);
+    public async getOne(req: CrudRequest): Promise<T> {
+        return this.getOneOrFail(req);
     }
 
     /**
@@ -194,14 +191,13 @@ export class CrudService<T extends { id?: string }> {
      * Create TypeOrm QueryBuilder
      * @param parsed
      * @param options
-     * @param langCode
+     * 
      * @param many
      */
     // eslint-disable-next-line complexity
     private async createBuilder(
         parsed: ParsedRequestParams,
         options: CrudRequestOptions,
-        langCode: string,
         many: boolean = true
     ): Promise<SelectQueryBuilder<T>> {
         // create query builder
@@ -213,7 +209,7 @@ export class CrudService<T extends { id?: string }> {
         // select fields
 
         // search
-        this.setSearchCondition(builder, langCode, parsed.search);
+        this.setSearchCondition(builder, parsed.search);
 
         // set joins
         const joinOptions: ObjectLiteral = options.query.join || {};
@@ -227,7 +223,7 @@ export class CrudService<T extends { id?: string }> {
         /* istanbul ignore else */
         if (many) {
             // set sort (order by)
-            const sort: ObjectLiteral = this.getSort(parsed, options.query, langCode);
+            const sort: ObjectLiteral = this.getSort(parsed, options.query);
 
             builder.orderBy(sort);
 
@@ -253,22 +249,6 @@ export class CrudService<T extends { id?: string }> {
         }
 
         builder.select(this.select);
-        if (langCode !== 'all') {
-            const i18nColumns: string[] = this.select.filter((col: string) =>
-                col.endsWith("_i18n")
-            );
-            for (const col of i18nColumns) {
-                const splitted: string[] = col.split(".");
-                const alias: string = splitted.join("_");
-                const field: string = `"${splitted.at(-1)}"->>'${langCode}'`;
-                splitted.splice(-1, 1);
-                const select: string = [
-                    ...splitted.map((s: string) => `"${s}"`),
-                    field,
-                ].join(".");
-                builder.addSelect(select, alias);
-            }
-        }
         return builder;
     }
 
@@ -335,16 +315,15 @@ export class CrudService<T extends { id?: string }> {
 
     private async getOneOrFail(
         req: CrudRequest,
-        langCode: string,
         shallow: boolean = false
     ): Promise<T> {
         const {parsed, options} = req;
         const builder: SelectQueryBuilder<T> = shallow
             ? this.repository.createQueryBuilder(this.alias)
-            : await this.createBuilder(parsed, options, langCode, false);
+            : await this.createBuilder(parsed, options,  false);
 
         if (shallow) {
-            this.setSearchCondition(builder, langCode, parsed.search);
+            this.setSearchCondition(builder, parsed.search);
         }
 
         const found: T = await builder.getOne();
@@ -476,13 +455,8 @@ export class CrudService<T extends { id?: string }> {
         cond: QueryFilter,
         i: any,
         builder: SelectQueryBuilder<T> | WhereExpression,
-        langCode: string
     ): void {
-        const {str, params} = this.mapOperatorsToQuery(
-            cond,
-            `andWhere${i}`,
-            langCode
-        );
+        const {str, params} = this.mapOperatorsToQuery(cond,`andWhere${i}`);
         builder.andWhere(str, params);
     }
 
@@ -490,19 +464,16 @@ export class CrudService<T extends { id?: string }> {
         cond: QueryFilter,
         i: any,
         builder: SelectQueryBuilder<T> | WhereExpression,
-        langCode: string
     ): void {
         const {str, params} = this.mapOperatorsToQuery(
             cond,
             `orWhere${i}`,
-            langCode
         );
         builder.orWhere(str, params);
     }
 
     private setSearchCondition(
         builder: SelectQueryBuilder<T>,
-        langCode: string,
         search: SCondition,
         condition: SConditionKey = "$and"
     ): void {
@@ -517,7 +488,6 @@ export class CrudService<T extends { id?: string }> {
                     if (search.$and.length === 1) {
                         this.setSearchCondition(
                             builder,
-                            langCode,
                             search.$and[0],
                             condition
                         );
@@ -529,7 +499,7 @@ export class CrudService<T extends { id?: string }> {
                             condition,
                             new Brackets((qb: any) => {
                                 for (const item of search.$and) {
-                                    this.setSearchCondition(qb, langCode, item, "$and");
+                                    this.setSearchCondition(qb,  item, "$and");
                                 }
                             })
                         );
@@ -543,7 +513,6 @@ export class CrudService<T extends { id?: string }> {
                         if (search.$or.length === 1) {
                             this.setSearchCondition(
                                 builder,
-                                langCode,
                                 search.$or[0],
                                 condition
                             );
@@ -555,7 +524,7 @@ export class CrudService<T extends { id?: string }> {
                                 condition,
                                 new Brackets((qb: any) => {
                                     for (const item of search.$or) {
-                                        this.setSearchCondition(qb, langCode, item, "$or");
+                                        this.setSearchCondition(qb, item, "$or");
                                     }
                                 })
                             );
@@ -571,11 +540,10 @@ export class CrudService<T extends { id?: string }> {
                                     if (field !== "$or") {
                                         const value: any = search[field];
                                         if (!isObject(value)) {
-                                            this.builderSetWhere(qb, langCode, "$and", field, value);
+                                            this.builderSetWhere(qb,  "$and", field, value);
                                         } else {
                                             this.setSearchFieldObjectCondition(
                                                 qb,
-                                                langCode,
                                                 "$and",
                                                 field,
                                                 value
@@ -585,7 +553,7 @@ export class CrudService<T extends { id?: string }> {
                                         if (search.$or.length === 1) {
                                             this.setSearchCondition(
                                                 builder,
-                                                langCode,
+
                                                 search.$or[0],
                                                 "$and"
                                             );
@@ -595,7 +563,7 @@ export class CrudService<T extends { id?: string }> {
                                                 "$and",
                                                 new Brackets((qb2: any) => {
                                                     for (const item of search.$or) {
-                                                        this.setSearchCondition(qb2, langCode, item, "$or");
+                                                        this.setSearchCondition(qb2,  item, "$or");
                                                     }
                                                 })
                                             );
@@ -613,11 +581,10 @@ export class CrudService<T extends { id?: string }> {
                         const field: string = keys[0];
                         const value: any = search[field];
                         if (!isObject(value)) {
-                            this.builderSetWhere(builder, langCode, condition, field, value);
+                            this.builderSetWhere(builder,  condition, field, value);
                         } else {
                             this.setSearchFieldObjectCondition(
                                 builder,
-                                langCode,
                                 condition,
                                 field,
                                 value
@@ -633,11 +600,10 @@ export class CrudService<T extends { id?: string }> {
                                 for (const field of keys) {
                                     const value: any = search[field];
                                     if (!isObject(value)) {
-                                        this.builderSetWhere(qb, langCode, "$and", field, value);
+                                        this.builderSetWhere(qb,  "$and", field, value);
                                     } else {
                                         this.setSearchFieldObjectCondition(
                                             qb,
-                                            langCode,
                                             "$and",
                                             field,
                                             value
@@ -666,7 +632,6 @@ export class CrudService<T extends { id?: string }> {
 
     private builderSetWhere(
         builder: SelectQueryBuilder<T>,
-        langCode: string,
         condition: SConditionKey,
         field: string,
         value: any,
@@ -679,7 +644,6 @@ export class CrudService<T extends { id?: string }> {
             {field, operator: isNull(value) ? "$isnull" : operator, value},
             index,
             builder,
-            langCode,
         ];
         // eslint-disable-next-line @typescript-eslint/typedef
         const fn = condition === "$and" ? this.setAndWhere : this.setOrWhere;
@@ -688,7 +652,6 @@ export class CrudService<T extends { id?: string }> {
 
     private setSearchFieldObjectCondition(
         builder: SelectQueryBuilder<T>,
-        langCode: string,
         condition: SConditionKey,
         field: string,
         object: any
@@ -705,7 +668,6 @@ export class CrudService<T extends { id?: string }> {
                     const orKeys: string[] = objKeys(object.$or);
                     this.setSearchFieldObjectCondition(
                         builder,
-                        langCode,
                         orKeys.length === 1 ? condition : "$or",
                         field,
                         object.$or
@@ -713,7 +675,6 @@ export class CrudService<T extends { id?: string }> {
                 } else {
                     this.builderSetWhere(
                         builder,
-                        langCode,
                         condition,
                         field,
                         value,
@@ -733,7 +694,6 @@ export class CrudService<T extends { id?: string }> {
                                 if (operator !== "$or") {
                                     this.builderSetWhere(
                                         qb,
-                                        langCode,
                                         condition,
                                         field,
                                         value,
@@ -745,7 +705,7 @@ export class CrudService<T extends { id?: string }> {
                                     if (orKeys.length === 1) {
                                         this.setSearchFieldObjectCondition(
                                             qb,
-                                            langCode,
+
                                             condition,
                                             field,
                                             object.$or
@@ -757,7 +717,7 @@ export class CrudService<T extends { id?: string }> {
                                             new Brackets((qb2: any) => {
                                                 this.setSearchFieldObjectCondition(
                                                     qb2,
-                                                    langCode,
+
                                                     "$or",
                                                     field,
                                                     object.$or
@@ -801,19 +761,18 @@ export class CrudService<T extends { id?: string }> {
     private getSort(
         query: ParsedRequestParams,
         options: QueryOptions,
-        langCode: string
     ): ObjectLiteral {
         if (query.sort && query.sort.length > 0) {
-            return this.mapSort(query.sort, langCode);
+            return this.mapSort(query.sort);
         } else {
             return options.sort && options.sort.length > 0
-                ? this.mapSort(options.sort, langCode)
+                ? this.mapSort(options.sort)
                 : {};
         }
     }
 
-    private getFieldWithAlias(rawField: string, langCode: string): string {
-        const field: string = this.addLanguageToField(rawField, langCode);
+    private getFieldWithAlias(rawField: string): string {
+        const field: string = rawField;
         const cols: string[] = field.split(".");
         // relation is alias
         switch (cols.length) {
@@ -826,17 +785,11 @@ export class CrudService<T extends { id?: string }> {
         }
     }
 
-    private addLanguageToField(field: string, langCode: string): string {
-        return field.endsWith("_i18n") && langCode !== 'all'
-            ? `${field}->>'${langCode}'`
-            : field;
-    }
-
-    private mapSort(sort: QuerySort[], langCode: string): ObjectLiteral {
+    private mapSort(sort: QuerySort[]): ObjectLiteral {
         const params: ObjectLiteral = {};
 
         for (const element of sort) {
-            params[this.getFieldWithAlias(element.field, langCode)] = element.order;
+            params[this.getFieldWithAlias(element.field)] = element.order;
         }
 
         return params;
@@ -845,10 +798,9 @@ export class CrudService<T extends { id?: string }> {
     // eslint-disable-next-line complexity
     private mapOperatorsToQuery(
         cond: QueryFilter,
-        param: any,
-        langCode: string
+        param: any
     ): { str: string; params: ObjectLiteral } {
-        const field: string = this.getFieldWithAlias(cond.field, langCode);
+        const field: string = this.getFieldWithAlias(cond.field);
         const likeOperator: string = "ILIKE";
         let str: string;
         let params: ObjectLiteral;
@@ -1077,7 +1029,6 @@ export class CrudService<T extends { id?: string }> {
 
     async crudGetOne(
         id: string,
-        langCode: string,
         req: CrudRequest = emptyCrudRequest
     ): Promise<T> {
         return this.getOne(
@@ -1097,13 +1048,11 @@ export class CrudService<T extends { id?: string }> {
                     },
                 },
             },
-            langCode
         );
     }
 
     async crudGetMany(
         req: CrudRequest = emptyCrudRequest,
-        langCode: string
     ): Promise<Pageable<T>> {
         const request: CrudRequest = {
             parsed: {
@@ -1129,7 +1078,7 @@ export class CrudService<T extends { id?: string }> {
         };
 
         const {data, count, page, pageCount, total}: GetManyDefaultResponse<T> =
-            (await this.getMany(request, langCode)) as GetManyDefaultResponse<T>;
+            (await this.getMany(request)) as GetManyDefaultResponse<T>;
 
         return {
             items: data,
