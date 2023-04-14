@@ -27,7 +27,6 @@ export declare class CrudService<T extends {
     softDelete(ids: string | string[]): Promise<number>;
     create(input: DeepPartial<T>): Promise<T>;
     update(id: string, input: DeepPartial<T>): Promise<T>;
-    private decidePagination;
     private get entityType();
     private get alias();
     private createBuilder;

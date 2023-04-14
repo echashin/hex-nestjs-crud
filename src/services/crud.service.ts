@@ -54,8 +54,6 @@ import {mapErrors} from "../helpers/exception-factory";
 import {UniqueInArray} from "../validators/unique-in-array";
 
 
-
-
 export class CrudService<T extends { id?: string }> {
     private entityColumns: string[];
     private entityPrimaryColumns: string[];
@@ -95,17 +93,14 @@ export class CrudService<T extends { id?: string }> {
         req: CrudRequest,
     ): Promise<GetManyDefaultResponse<T> | T[]> {
         const {parsed, options} = req;
-        const builder: SelectQueryBuilder<T> = await this.createBuilder(
-            parsed,
-            options,
-        );
-        return this.doGetMany(builder, parsed, options);
+        const builder: SelectQueryBuilder<T> = await this.createBuilder(parsed, options);
+        return this.doGetMany(builder);
     }
 
     /**
      * Get one
      * @param req
-     * 
+     *
      */
     public async getOne(req: CrudRequest): Promise<T> {
         return this.getOneOrFail(req);
@@ -168,17 +163,6 @@ export class CrudService<T extends { id?: string }> {
         return this.repository.save(deepmerge<T, DeepPartial<T>>(entity, input));
     }
 
-    private decidePagination(
-        parsed: ParsedRequestParams,
-        options: CrudRequestOptions
-    ): boolean {
-        return (
-            options.query.alwaysPaginate ||
-            ((Number.isFinite(parsed.page) || Number.isFinite(parsed.offset)) &&
-                !!this.getTake(parsed, options.query))
-        );
-    }
-
     private get entityType(): ClassConstructor<T> {
         return this.repository.target as ClassConstructor<T>;
     }
@@ -191,7 +175,7 @@ export class CrudService<T extends { id?: string }> {
      * Create TypeOrm QueryBuilder
      * @param parsed
      * @param options
-     * 
+     *
      * @param many
      */
     // eslint-disable-next-line complexity
@@ -247,8 +231,8 @@ export class CrudService<T extends { id?: string }> {
         if (options.query.cache && parsed.cache !== 0) {
             builder.cache(builder.getQueryAndParameters(), options.query.cache);
         }
-
-        builder.select(this.select);
+        console.log(this.select);
+        builder.select([...new Set(this.select)]);
         return builder;
     }
 
@@ -259,24 +243,17 @@ export class CrudService<T extends { id?: string }> {
      * @see SelectQueryBuilder#getMany
      * @see SelectQueryBuilder#getManyAndCount
      * @param builder
-     * @param query
-     * @param options
      */
     private async doGetMany(
         builder: SelectQueryBuilder<T>,
-        query: ParsedRequestParams,
-        options: CrudRequestOptions
     ): Promise<GetManyDefaultResponse<T> | T[]> {
-        if (this.decidePagination(query, options)) {
-            const [data, total] = await builder.getManyAndCount();
 
-            const limit: number = builder.expressionMap.take;
-            const offset: number = builder.expressionMap.skip;
+        const [data, total] = await builder.getManyAndCount();
 
-            return this.createPageInfo(data, total, limit || total, offset || 0);
-        }
+        const limit: number = builder.expressionMap.take;
+        const offset: number = builder.expressionMap.skip;
 
-        return builder.getMany();
+        return this.createPageInfo(data, total, limit || total, offset || 0);
     }
 
     private onInitMapEntityColumns(): void {
@@ -320,7 +297,7 @@ export class CrudService<T extends { id?: string }> {
         const {parsed, options} = req;
         const builder: SelectQueryBuilder<T> = shallow
             ? this.repository.createQueryBuilder(this.alias)
-            : await this.createBuilder(parsed, options,  false);
+            : await this.createBuilder(parsed, options, false);
 
         if (shallow) {
             this.setSearchCondition(builder, parsed.search);
@@ -456,7 +433,7 @@ export class CrudService<T extends { id?: string }> {
         i: any,
         builder: SelectQueryBuilder<T> | WhereExpression,
     ): void {
-        const {str, params} = this.mapOperatorsToQuery(cond,`andWhere${i}`);
+        const {str, params} = this.mapOperatorsToQuery(cond, `andWhere${i.replaceAll('#', '_')}`);
         builder.andWhere(str, params);
     }
 
@@ -467,7 +444,7 @@ export class CrudService<T extends { id?: string }> {
     ): void {
         const {str, params} = this.mapOperatorsToQuery(
             cond,
-            `orWhere${i}`,
+            `orWhere${i.replaceAll('#', '_')}`,
         );
         builder.orWhere(str, params);
     }
@@ -499,7 +476,7 @@ export class CrudService<T extends { id?: string }> {
                             condition,
                             new Brackets((qb: any) => {
                                 for (const item of search.$and) {
-                                    this.setSearchCondition(qb,  item, "$and");
+                                    this.setSearchCondition(qb, item, "$and");
                                 }
                             })
                         );
@@ -540,7 +517,7 @@ export class CrudService<T extends { id?: string }> {
                                     if (field !== "$or") {
                                         const value: any = search[field];
                                         if (!isObject(value)) {
-                                            this.builderSetWhere(qb,  "$and", field, value);
+                                            this.builderSetWhere(qb, "$and", field, value);
                                         } else {
                                             this.setSearchFieldObjectCondition(
                                                 qb,
@@ -563,7 +540,7 @@ export class CrudService<T extends { id?: string }> {
                                                 "$and",
                                                 new Brackets((qb2: any) => {
                                                     for (const item of search.$or) {
-                                                        this.setSearchCondition(qb2,  item, "$or");
+                                                        this.setSearchCondition(qb2, item, "$or");
                                                     }
                                                 })
                                             );
@@ -581,7 +558,7 @@ export class CrudService<T extends { id?: string }> {
                         const field: string = keys[0];
                         const value: any = search[field];
                         if (!isObject(value)) {
-                            this.builderSetWhere(builder,  condition, field, value);
+                            this.builderSetWhere(builder, condition, field, value);
                         } else {
                             this.setSearchFieldObjectCondition(
                                 builder,
@@ -600,7 +577,7 @@ export class CrudService<T extends { id?: string }> {
                                 for (const field of keys) {
                                     const value: any = search[field];
                                     if (!isObject(value)) {
-                                        this.builderSetWhere(qb,  "$and", field, value);
+                                        this.builderSetWhere(qb, "$and", field, value);
                                     } else {
                                         this.setSearchFieldObjectCondition(
                                             qb,
@@ -734,12 +711,12 @@ export class CrudService<T extends { id?: string }> {
         }
     }
 
-    private prepareColumn(name:string):string{
-        const parts:string[] = name.split('.');
-        if(parts.length === 1){
+    private prepareColumn(name: string): string {
+        const parts: string[] = name.split('#');
+        if (parts.length === 1) {
             return name;
-        }else{
-            return `${parts[0]} #>> '{`+parts.slice(1).join(',')+`}'`;
+        } else {
+            return `"${parts[0]}" #>> '{` + parts.slice(1).join(',') + `}'`;
         }
     }
 
@@ -754,12 +731,12 @@ export class CrudService<T extends { id?: string }> {
 
         const columns: string[] =
             query.fields && query.fields.length > 0
-                ? query.fields.filter((field: string) => allowed.includes(field.split('.')[0]))
+                ? query.fields.filter((field: string) => allowed.includes(field))
                 : allowed;
 
         const select: string[] = [
             ...(options.persist && options.persist.length > 0 ? options.persist : []),
-            ...columns.map((c:string)=>this.prepareColumn(c)),
+            ...columns,
             ...this.entityPrimaryColumns,
         ].map((col: string) => {
             return `${this.alias}.${col}`;
@@ -781,17 +758,27 @@ export class CrudService<T extends { id?: string }> {
     }
 
     private getFieldWithAlias(rawField: string): string {
+
         const field: string = rawField;
         const cols: string[] = field.split(".");
+        let result: string;
         // relation is alias
         switch (cols.length) {
             case 1:
-                return `"${this.alias}"."${field}"`;
+                result = `"${this.alias}".${this.prepareColumn(field)}`;
+                break;
             case 2:
-                return field;
-            default:
-                return cols.slice(-2, cols.length).join(".");
+                result = `"${cols[0]}".${this.prepareColumn(cols[1])}`;
+                break;
+            default: {
+                const cols2: string[] = cols.slice(-2, cols.length);
+                result = `"${cols2[0]}".${this.prepareColumn(cols2[1])}`;
+                break;
+            }
+
         }
+        console.warn(rawField, result);
+        return result;
     }
 
     private mapSort(sort: QuerySort[]): ObjectLiteral {
@@ -810,6 +797,7 @@ export class CrudService<T extends { id?: string }> {
         param: any
     ): { str: string; params: ObjectLiteral } {
         const field: string = this.getFieldWithAlias(cond.field);
+
         const likeOperator: string = "ILIKE";
         let str: string;
         let params: ObjectLiteral;
@@ -984,7 +972,7 @@ export class CrudService<T extends { id?: string }> {
                 input,
                 {
                     skipMissingProperties: true,
-                    whitelist:true,
+                    whitelist: true,
                 }
             );
             if (validationErrors.length > 0) {
@@ -1049,11 +1037,11 @@ export class CrudService<T extends { id?: string }> {
                 options: {
                     ...req.options,
                     params: {
-                        id: {
-                            field: "id",
-                            type: "uuid",
-                            primary: true,
-                        },
+                        // id: {
+                        //     field: "id",
+                        //     type: "uuid",
+                        //     primary: true,
+                        // },
                     },
                 },
             },
@@ -1071,7 +1059,6 @@ export class CrudService<T extends { id?: string }> {
                 ...req.options,
                 query: {
                     ...req.options.query,
-                    alwaysPaginate: true,
                     exclude: [...this.exclude, "version"],
                     join: this.join,
                 },
@@ -1092,8 +1079,8 @@ export class CrudService<T extends { id?: string }> {
         return {
             items: data,
             count,
-            page,
-            pageCount,
+            page: page || 0,
+            pageCount: pageCount || 0,
             total,
         };
     }
