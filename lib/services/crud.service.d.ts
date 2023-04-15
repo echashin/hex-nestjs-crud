@@ -17,9 +17,6 @@ export declare class CrudService<T extends {
     private join;
     private exclude;
     constructor(repository: Repository<T>, join?: JoinOptions);
-    get findOne(): Repository<T>["findOne"];
-    get find(): Repository<T>["find"];
-    get count(): Repository<T>["count"];
     getMany(req: CrudRequest): Promise<GetManyDefaultResponse<T> | T[]>;
     getOne(req: CrudRequest): Promise<T>;
     delete(ids: string | string[]): Promise<number>;

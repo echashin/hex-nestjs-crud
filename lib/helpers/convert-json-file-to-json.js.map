@@ -1,0 +1,1 @@
+{"version":3,"file":"convert-json-file-to-json.js","sourceRoot":"","sources":["../../src/helpers/convert-json-file-to-json.ts"],"names":[],"mappings":";;;;;;AAAA,4DAA6B;AAC7B,SAAgB,qBAAqB,CAAI,MAAc;IACnD,OAAO,IAAI,CAAC,KAAK,CAAC,MAAM,CAAC,QAAQ,EAAE,CAAC,CAAC,GAAG,CACpC,CAAC,GAAQ,EAAE,EAAE,CAAC,oBAAG,CAAC,MAAM,CAAC,GAAG,CAAiB,CAChD,CAAC;AACN,CAAC;AAJD,sDAIC"}

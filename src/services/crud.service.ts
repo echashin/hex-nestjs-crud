@@ -57,18 +57,6 @@ export class CrudService<T extends { id?: string }> {
         this.onInitMapRelations();
     }
 
-    public get findOne(): Repository<T>["findOne"] {
-        return this.repository.findOne.bind(this.repository);
-    }
-
-    public get find(): Repository<T>["find"] {
-        return this.repository.find.bind(this.repository);
-    }
-
-    public get count(): Repository<T>["count"] {
-        return this.repository.count.bind(this.repository);
-    }
-
     /**
      * Get many
      * @param req
