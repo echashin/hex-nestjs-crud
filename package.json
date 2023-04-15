@@ -1,6 +1,6 @@
 {
   "name": "hex-nestjs-crud",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Easy way to work with cruds",
   "main": "lib/index.js",
   "private": false,
