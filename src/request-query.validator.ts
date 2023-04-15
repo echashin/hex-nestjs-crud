@@ -1,9 +1,6 @@
-import { BadRequestException } from "@nestjs/common";
+import {BadRequestException} from "@nestjs/common";
 
-import {
-  ParamOption,
-  ParamsOptions,
-} from "./interfaces/params-options.interface";
+import {ParamOption, ParamsOptions,} from "./interfaces/params-options.interface";
 import {
   ComparisonOperator,
   CondOperator,
@@ -12,16 +9,7 @@ import {
   QueryJoin,
   QuerySort,
 } from "./types/request-query.types";
-import {
-  isArrayStrings,
-  isEqual,
-  isNil,
-  isNumber,
-  isObject,
-  isStringFull,
-  isUndefined,
-} from "./utils/checks.util";
-import { objKeys } from "./utils/obj.util";
+import {isArrayStrings, isEqual, isNil, isNumber, isObject, isStringFull, isUndefined,} from "./utils/checks.util";
 
 export const deprecatedComparisonOperatorsList: string[] = [
   "eq",
@@ -42,7 +30,7 @@ export const deprecatedComparisonOperatorsList: string[] = [
 ];
 export const comparisonOperatorsList: any[] = [
   ...deprecatedComparisonOperatorsList,
-  ...objKeys(CondOperator).map((n: string) => CondOperator[n]),
+  ...Object.keys(CondOperator).map((n: string) => CondOperator[n]),
 ];
 
 export const sortOrdersList: string[] = ["ASC", "DESC"];

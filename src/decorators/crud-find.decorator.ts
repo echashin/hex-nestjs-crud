@@ -9,7 +9,6 @@ import { ApiExtraModels, ApiOperation, ApiQuery } from "@nestjs/swagger";
 
 
 import { CrudRequestInterceptor } from "../interceptors/crud-request.interceptor";
-import { CrudRequestSoftDeleteInterceptor } from "../interceptors/crud-request-soft-delete.interceptor";
 import { ApiPaginatedResponse } from "./api-paginated-response";
 
 export const CrudFind: any = <TModel extends Type<any>>(
@@ -27,7 +26,6 @@ export const CrudFind: any = <TModel extends Type<any>>(
     UseInterceptors(
       CrudRequestInterceptor,
       ClassSerializerInterceptor,
-      CrudRequestSoftDeleteInterceptor
     ),
     ApiQuery({
       name: "fields",
@@ -96,7 +94,7 @@ export const CrudFind: any = <TModel extends Type<any>>(
         'Page portion of resources. <a href="https://github.com/nestjsx/crud/wiki/Requests#page" target="_blank">Docs</a>',
     }),
     ApiQuery({
-      name: "softDelete",
+      name: "includeDeleted",
       required: false,
       type: Boolean,
       description: "Load deleted items",

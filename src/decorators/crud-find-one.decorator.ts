@@ -13,7 +13,6 @@ import {
 } from "@nestjs/swagger";
 
 import { CrudRequestInterceptor } from "../interceptors/crud-request.interceptor";
-import { CrudRequestSoftDeleteInterceptor } from "../interceptors/crud-request-soft-delete.interceptor";
 
 export const CrudFindOne: any = <TModel extends Type<any>>(entity: TModel) => {
   return applyDecorators(
@@ -25,7 +24,6 @@ export const CrudFindOne: any = <TModel extends Type<any>>(entity: TModel) => {
     UseInterceptors(
       CrudRequestInterceptor,
       ClassSerializerInterceptor,
-      CrudRequestSoftDeleteInterceptor
     ),
     ApiOkResponse({
       schema: {
@@ -51,7 +49,7 @@ export const CrudFindOne: any = <TModel extends Type<any>>(entity: TModel) => {
         'Adds relational resources. <a href="https://github.com/nestjsx/crud/wiki/Requests#join" target="_blank">Docs</a>',
     }),
     ApiQuery({
-      name: "softDelete",
+      name: "includeDeleted",
       required: false,
       type: Boolean,
       description: "Load deleted items",

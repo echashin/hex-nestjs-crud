@@ -1,9 +1,4 @@
-import {
-    BadRequestException,
-    InternalServerErrorException,
-    NotFoundException,
-    ValidationError,
-} from "@nestjs/common";
+import {BadRequestException, InternalServerErrorException, NotFoundException, ValidationError,} from "@nestjs/common";
 import {ClassConstructor, plainToClass} from "class-transformer";
 import {validate} from "class-validator";
 import deepmerge from "deepmerge";
@@ -29,11 +24,7 @@ import {CrudRequestOptions} from "../interfaces/crud-options.interface";
 import {CrudRequest} from "../interfaces/crud-request.interface";
 import {GetManyDefaultResponse} from "../interfaces/get-many-default-response.interface";
 import {ParsedRequestParams} from "../interfaces/parsed-request.interface";
-import {
-    JoinOption,
-    JoinOptions,
-    QueryOptions,
-} from "../interfaces/query-options.interface";
+import {JoinOption, JoinOptions, QueryOptions,} from "../interfaces/query-options.interface";
 import {
     ComparisonOperator,
     QueryFilter,
@@ -42,14 +33,7 @@ import {
     SCondition,
     SConditionKey,
 } from "../types/request-query.types";
-import {
-    isArrayFull,
-    isEqual,
-    isNil,
-    isNull,
-    isObject,
-} from "../utils/checks.util";
-import {objKeys} from "../utils/obj.util";
+import {isArrayFull, isEqual, isNil, isNull, isObject,} from "../utils/checks.util";
 import {mapErrors} from "../helpers/exception-factory";
 import {UniqueInArray} from "../validators/unique-in-array";
 
@@ -456,7 +440,7 @@ export class CrudService<T extends { id?: string }> {
     ): void {
         /* istanbul ignore else */
         if (isObject(search)) {
-            const keys: string[] = objKeys(search);
+            const keys: string[] = Object.keys(search);
             /* istanbul ignore else */
             if (keys.length > 0) {
                 // search: {$and: [...], ...}
@@ -634,7 +618,7 @@ export class CrudService<T extends { id?: string }> {
         object: any
     ): void {
         if (isObject(object)) {
-            const operators: string[] = objKeys(object);
+            const operators: string[] = Object.keys(object);
 
             if (operators.length === 1) {
                 // eslint-disable-next-line @typescript-eslint/typedef
@@ -642,7 +626,7 @@ export class CrudService<T extends { id?: string }> {
                 const value: any = object[operator];
 
                 if (isObject(object.$or)) {
-                    const orKeys: string[] = objKeys(object.$or);
+                    const orKeys: string[] = Object.keys(object.$or);
                     this.setSearchFieldObjectCondition(
                         builder,
                         orKeys.length === 1 ? condition : "$or",
@@ -677,7 +661,7 @@ export class CrudService<T extends { id?: string }> {
                                         operator as ComparisonOperator
                                     );
                                 } else {
-                                    const orKeys: string[] = objKeys(object.$or);
+                                    const orKeys: string[] = Object.keys(object.$or);
 
                                     if (orKeys.length === 1) {
                                         this.setSearchFieldObjectCondition(
