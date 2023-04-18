@@ -1,16 +1,15 @@
 import {BadRequestException, InternalServerErrorException, NotFoundException, ValidationError,} from "@nestjs/common";
-import {ClassConstructor, plainToClass} from "class-transformer";
+import {ClassConstructor, plainToClass, plainToInstance} from "class-transformer";
 import {validate} from "class-validator";
 import deepmerge from "deepmerge";
 import {
     Brackets,
     DeepPartial,
     DeleteResult,
-    getManager,
     ObjectLiteral,
     Repository,
     SelectQueryBuilder,
-    WhereExpression,
+    WhereExpressionBuilder,
 } from "typeorm";
 import {ColumnMetadata} from "typeorm/metadata/ColumnMetadata";
 import {RelationMetadata} from "typeorm/metadata/RelationMetadata";
@@ -61,21 +60,12 @@ export class CrudService<T extends { id?: string }> {
      * Get many
      * @param req
      */
-    public async getMany(
+    private async getMany(
         req: CrudRequest,
     ): Promise<GetManyDefaultResponse<T> | T[]> {
         const {parsed, options} = req;
         const builder: SelectQueryBuilder<T> = await this.createBuilder(parsed, options);
         return this.doGetMany(builder);
-    }
-
-    /**
-     * Get one
-     * @param req
-     *
-     */
-    public async getOne(req: CrudRequest): Promise<T> {
-        return this.getOneOrFail(req);
     }
 
     /**
@@ -403,7 +393,7 @@ export class CrudService<T extends { id?: string }> {
     private setAndWhere(
         cond: QueryFilter,
         i: any,
-        builder: SelectQueryBuilder<T> | WhereExpression,
+        builder: SelectQueryBuilder<T> | WhereExpressionBuilder,
     ): void {
         const {str, params} = this.mapOperatorsToQuery(cond, `andWhere${i.replaceAll('#', '_')}`);
         builder.andWhere(str, params);
@@ -412,7 +402,7 @@ export class CrudService<T extends { id?: string }> {
     private setOrWhere(
         cond: QueryFilter,
         i: any,
-        builder: SelectQueryBuilder<T> | WhereExpression,
+        builder: SelectQueryBuilder<T> | WhereExpressionBuilder,
     ): void {
         const {str, params} = this.mapOperatorsToQuery(
             cond,
@@ -918,7 +908,7 @@ export class CrudService<T extends { id?: string }> {
         inputCls: ClassConstructor<I>,
         data: I[]
     ): Promise<ImportDto> {
-        const inputs: I[] = plainToClass(inputCls, data, {
+        const inputs: I[] = plainToInstance(inputCls, data, {
             enableImplicitConversion: true,
         });
         const inputObjectClass: I = plainToClass(inputCls, {});
@@ -979,12 +969,12 @@ export class CrudService<T extends { id?: string }> {
             };
         }
 
-        await getManager().transaction(async () => {
-            await this.repository.save(
-                this.repository.create(inputs as DeepPartial<T>),
-                {chunk: 500}
-            );
-        });
+
+        await this.repository.save(
+            this.repository.create(inputs as DeepPartial<T>),
+            {chunk: 500, transaction: true}
+        );
+
 
         return {
             keys,
@@ -1000,7 +990,7 @@ export class CrudService<T extends { id?: string }> {
         id: string,
         req: CrudRequest = emptyCrudRequest
     ): Promise<T> {
-        return this.getOne(
+        return this.getOneOrFail(
             {
                 parsed: {
                     ...req.parsed,
@@ -1031,7 +1021,6 @@ export class CrudService<T extends { id?: string }> {
                 ...req.options,
                 query: {
                     ...req.options.query,
-                    exclude: [...this.exclude, "version"],
                     join: this.join,
                 },
                 params: {

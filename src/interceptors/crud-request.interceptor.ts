@@ -8,7 +8,7 @@ import {
 import { Observable } from "rxjs";
 
 import { PARSED_CRUD_REQUEST_KEY } from "../constants";
-import { CrudActions } from "../enums";
+
 import { MergedCrudOptions } from "../interfaces/crud-options.interface";
 import { CrudRequest } from "../interfaces/crud-request.interface";
 import { ParsedRequestParams } from "../interfaces/parsed-request.interface";
@@ -72,8 +72,7 @@ export class CrudRequestInterceptor implements NestInterceptor {
   getSearch(
     parser: RequestQueryParser,
     crudOptions: Partial<MergedCrudOptions>,
-    action: CrudActions,
-    params?: any
+   params?: any
   ): SCondition[] {
     // params condition
     const paramsSearch: SCondition[] = this.getParamsSearch(
@@ -87,7 +86,7 @@ export class CrudRequestInterceptor implements NestInterceptor {
       const filterCond: SFields | SConditionAND | void =
         (crudOptions.query.filter as QueryFilterFunction)(
           parser.search,
-          action === CrudActions.ReadAll
+          true
         ) || {};
 
       return [...paramsSearch, filterCond];

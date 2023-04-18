@@ -3,7 +3,6 @@ import { DeepPartial, Repository } from "typeorm";
 import { ImportDto } from "../dto/import.dto";
 import { Pageable } from "../dto/pageable.dto";
 import { CrudRequest } from "../interfaces/crud-request.interface";
-import { GetManyDefaultResponse } from "../interfaces/get-many-default-response.interface";
 import { JoinOptions } from "../interfaces/query-options.interface";
 export declare class CrudService<T extends {
     id?: string;
@@ -17,8 +16,7 @@ export declare class CrudService<T extends {
     private join;
     private exclude;
     constructor(repository: Repository<T>, join?: JoinOptions);
-    getMany(req: CrudRequest): Promise<GetManyDefaultResponse<T> | T[]>;
-    getOne(req: CrudRequest): Promise<T>;
+    private getMany;
     delete(ids: string | string[]): Promise<number>;
     recover(id: string): Promise<T>;
     softDelete(ids: string | string[]): Promise<number>;
