@@ -1,0 +1,1 @@
+{"version":3,"file":"crud-patch.interceptor.d.ts","sourceRoot":"","sources":["../../src/interceptors/crud-patch.interceptor.ts"],"names":[],"mappings":"AAAA,OAAO,EAAC,WAAW,EAAE,gBAAgB,EAAc,eAAe,EAAC,MAAM,gBAAgB,CAAC;AAC1F,OAAO,EAAC,UAAU,EAAC,MAAM,MAAM,CAAC;AAEhC,qBACa,oBAAqB,YAAW,eAAe;IAC1D,SAAS,CAAC,OAAO,EAAE,gBAAgB,EAAE,IAAI,EAAE,WAAW,GAAG,UAAU,CAAC,GAAG,CAAC;CAQzE"}

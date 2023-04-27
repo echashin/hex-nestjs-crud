@@ -1,5 +1,6 @@
-import {applyDecorators, Patch, Type} from "@nestjs/common";
+import {applyDecorators, Patch, Type, UseInterceptors} from "@nestjs/common";
 import {ApiOkResponse, ApiOperation, getSchemaPath} from "@nestjs/swagger";
+import {CrudPatchInterceptor} from "../interceptors";
 
 
 export const CrudUpdate: any = <TModel extends Type<any>>(model: TModel) => {
@@ -11,6 +12,7 @@ export const CrudUpdate: any = <TModel extends Type<any>>(model: TModel) => {
                 $ref: getSchemaPath(model),
             },
         }),
+        UseInterceptors(CrudPatchInterceptor),
         Patch(":id")
     );
 };

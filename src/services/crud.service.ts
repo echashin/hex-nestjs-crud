@@ -121,7 +121,7 @@ export class CrudService<T extends { id?: string }> {
     public async update(id: string, input: DeepPartial<T>): Promise<T> {
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
-        const entity: T = await this.findOne({where: {id}});
+        const entity: T = await this.repository.findOne({where: {id}});
         return this.repository.save(deepmerge<T, DeepPartial<T>>(entity, input));
     }
 
