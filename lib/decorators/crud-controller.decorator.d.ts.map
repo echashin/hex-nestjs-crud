@@ -1,1 +1,1 @@
-{"version":3,"file":"crud-controller.decorator.d.ts","sourceRoot":"","sources":["../../src/decorators/crud-controller.decorator.ts"],"names":[],"mappings":"AAKA,eAAO,MAAM,cAAc,EAAE,GAW5B,CAAC"}
+{"version":3,"file":"crud-controller.decorator.d.ts","sourceRoot":"","sources":["../../src/decorators/crud-controller.decorator.ts"],"names":[],"mappings":"AAOA,eAAO,MAAM,cAAc,EAAE,GAY5B,CAAC"}
