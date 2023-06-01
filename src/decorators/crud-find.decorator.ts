@@ -5,6 +5,7 @@ import {ApiExtraModels, ApiOperation, ApiQuery} from "@nestjs/swagger";
 import {CrudRequestInterceptor} from "../interceptors/crud-request.interceptor";
 import {ApiPaginatedResponse} from "./api-paginated-response";
 import {Pageable} from "../dto";
+import {FindInput} from "../inputs";
 
 export const CrudFind: any = <TModel extends Type<any>>(
     entity: TModel,
@@ -14,7 +15,7 @@ export const CrudFind: any = <TModel extends Type<any>>(
         Get(path),
         ApiPaginatedResponse(entity),
         ApiExtraModels(entity),
-        ApiExtraModels(Pageable),
+        ApiExtraModels(Pageable, FindInput),
         ApiOperation({
             summary: `Retrieve multiple items ${entity.name}[]`,
             description: "find",
