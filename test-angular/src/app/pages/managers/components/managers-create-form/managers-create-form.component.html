@@ -1,0 +1,59 @@
+<form (ngSubmit)="onSubmit()" nzLayout="vertical" nz-form [formGroup]='form'>
+  <nz-form-item>
+    <nz-form-label nzNoColon nzFor="email" nzRequired>Email</nz-form-label>
+    <nz-form-control labelForErrorTip="Email">
+      <input formControlName='email' nz-input name="email" placeholder="Email">
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label nzNoColon nzFor="password" nzRequired>Password</nz-form-label>
+    <nz-form-control labelForErrorTip="Password">
+      <nz-input-group nzSize="large" [nzSuffix]="suffixTemplate">
+        <input
+          nz-input
+          formControlName="password"
+          [type]="passwordVisible ? 'text' : 'password'"
+          placeholder="Password"
+        />
+      </nz-input-group>
+      <ng-template #suffixTemplate>
+        <i nz-icon [nzType]="passwordVisible ? 'eye' : 'eye-invisible'"
+           (click)="passwordVisible = !passwordVisible"></i>
+      </ng-template>
+    </nz-form-control>
+  </nz-form-item>
+  <form formGroupName='settings'>
+    <nz-form-item>
+      <nz-form-label nzNoColon nzFor="firstName" nzRequired>First name</nz-form-label>
+      <nz-form-control labelForErrorTip="First name">
+        <input formControlName='firstName' nz-input name="firstName" placeholder="firstName">
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-label nzNoColon nzFor="lastName" nzRequired>Last Name</nz-form-label>
+      <nz-form-control labelForErrorTip="Last Name">
+        <input formControlName='lastName' nz-input name="lastName" placeholder="lastName">
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-label nzNoColon nzFor="lastName">Date Of Birth</nz-form-label>
+      <nz-form-control labelForErrorTip="Date Of Birth">
+        <nz-date-picker formControlName='dateOfBirth'></nz-date-picker>
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+      <nz-form-label nzNoColon nzFor="placeOfBirth">Place Of Birth</nz-form-label>
+      <nz-form-control labelForErrorTip="Place Of Birth">
+        <input
+          formControlName="placeOfBirth"
+          nz-input
+          type="text"
+          placeholder="Place Of Birth"
+        />
+      </nz-form-control>
+    </nz-form-item>
+
+
+  </form>
+</form>

@@ -1,0 +1,62 @@
+<form (ngSubmit)="onSubmit()" nzLayout="vertical" nz-form [formGroup]='form'>
+
+  <nz-form-item>
+    <nz-form-label nzNoColon nzFor="email" nzRequired>Email</nz-form-label>
+    <nz-form-control labelForErrorTip="Email">
+      <ng-template #emailErrors>
+        <div *ngIf="form.get('email')?.errors?.['email']">
+          Wrong email address
+        </div>
+        <div *ngIf="!form.get('email')?.errors?.['email']">
+          Please input email
+        </div>
+      </ng-template>
+      <input formControlName='email' nz-input name="email" placeholder="Email">
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label nzNoColon nzFor="password">New password</nz-form-label>
+    <nz-form-control labelForErrorTip="New password">
+      <ng-template #passwordErrors>
+        <div *ngIf="form.get('password')?.errors?.['maxlength']">
+          Long password. Max length {{passwordMaxLength}} symbols
+        </div>
+        <div *ngIf="!form.get('password')?.errors?.['maxlength']">
+          Please input password
+        </div>
+      </ng-template>
+      <nz-input-group nzSize="large" [nzSuffix]="suffixTemplate">
+        <input
+          nz-input
+          formControlName="password"
+          [type]="passwordVisible ? 'text' : 'password'"
+          placeholder="Password"
+        />
+      </nz-input-group>
+      <ng-template #suffixTemplate>
+        <i nz-icon [nzType]="passwordVisible ? 'eye' : 'eye-invisible'"
+           (click)="passwordVisible = !passwordVisible"></i>
+      </ng-template>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label nzNoColon nzFor="firstName" nzRequired>First name</nz-form-label>
+    <nz-form-control labelForErrorTip="First name">
+      <input formControlName='firstName' nz-input name="firstName" placeholder="firstName">
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label nzNoColon nzFor="lastName" nzRequired>Last Name</nz-form-label>
+    <nz-form-control labelForErrorTip="Last Name">
+      <input formControlName='lastName' nz-input name="lastName" placeholder="lastName">
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label nzNoColon nzFor="lastName">Date Of Birth</nz-form-label>
+    <nz-form-control labelForErrorTip="Date Of Birth">
+      <nz-date-picker formControlName='dateOfBirth'></nz-date-picker>
+    </nz-form-control>
+  </nz-form-item>
+
+
+</form>
