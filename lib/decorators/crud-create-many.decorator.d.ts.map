@@ -1,1 +1,1 @@
-{"version":3,"file":"crud-create-many.decorator.d.ts","sourceRoot":"","sources":["../../src/decorators/crud-create-many.decorator.ts"],"names":[],"mappings":"AAIA,wBAAgB,cAAc,IAAI,GAAG,CAMpC"}
+{"version":3,"file":"crud-create-many.decorator.d.ts","sourceRoot":"","sources":["../../src/decorators/crud-create-many.decorator.ts"],"names":[],"mappings":"AAKA,wBAAgB,cAAc,IAAI,GAAG,CAOpC"}

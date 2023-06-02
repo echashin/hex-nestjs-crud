@@ -1,1 +1,1 @@
-{"version":3,"file":"crud-delete-many.decorator.d.ts","sourceRoot":"","sources":["../../src/decorators/crud-delete-many.decorator.ts"],"names":[],"mappings":"AAIA,wBAAgB,cAAc,IAAI,GAAG,CAapC"}
+{"version":3,"file":"crud-delete-many.decorator.d.ts","sourceRoot":"","sources":["../../src/decorators/crud-delete-many.decorator.ts"],"names":[],"mappings":"AAKA,wBAAgB,cAAc,IAAI,GAAG,CAcpC"}

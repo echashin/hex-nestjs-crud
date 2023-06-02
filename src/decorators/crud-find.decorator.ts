@@ -1,11 +1,12 @@
 import {applyDecorators, ClassSerializerInterceptor, Get, Type, UseInterceptors,} from "@nestjs/common";
-import {ApiExtraModels, ApiOperation, ApiQuery} from "@nestjs/swagger";
+import {ApiExtension, ApiExtraModels, ApiOperation, ApiQuery} from "@nestjs/swagger";
 
 
 import {CrudRequestInterceptor} from "../interceptors/crud-request.interceptor";
 import {ApiPaginatedResponse} from "./api-paginated-response";
 import {Pageable} from "../dto";
 import {FindInput} from "../inputs";
+import {CrudMethodsEnum} from "../enums/crud-methods.enum";
 
 export const CrudFind: any = <TModel extends Type<any>>(
     entity: TModel,
@@ -16,6 +17,7 @@ export const CrudFind: any = <TModel extends Type<any>>(
         ApiPaginatedResponse(entity),
         ApiExtraModels(entity),
         ApiExtraModels(Pageable, FindInput),
+        ApiExtension('x-crud-method', { type: CrudMethodsEnum.find }),
         ApiOperation({
             summary: `Retrieve multiple items ${entity.name}[]`,
             description: "find",

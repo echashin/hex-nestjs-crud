@@ -1,2 +1,2 @@
-export declare function CrudDelete(): any;
+export declare function CrudDeleteOne(): any;
 //# sourceMappingURL=crud-delete.decorator.d.ts.map

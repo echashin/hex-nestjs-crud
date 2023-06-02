@@ -6,6 +6,7 @@ import {
     UseInterceptors,
 } from "@nestjs/common";
 import {
+    ApiExtension,
     ApiExtraModels,
     ApiOkResponse,
     ApiOperation,
@@ -15,6 +16,7 @@ import {
 
 import {CrudRequestInterceptor} from "../interceptors/crud-request.interceptor";
 import {FindOneInput} from "../inputs";
+import {CrudMethodsEnum} from "../enums/crud-methods.enum";
 
 export const CrudFindOne: any = <TModel extends Type<any>>(entity: TModel) => {
     return applyDecorators(
@@ -24,6 +26,7 @@ export const CrudFindOne: any = <TModel extends Type<any>>(entity: TModel) => {
             description: "find on item",
         }),
         ApiExtraModels(FindOneInput),
+        ApiExtension('x-crud-method', { type: CrudMethodsEnum.findOne }),
         UseInterceptors(
             CrudRequestInterceptor,
             ClassSerializerInterceptor,

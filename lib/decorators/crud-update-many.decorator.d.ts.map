@@ -1,1 +1,1 @@
-{"version":3,"file":"crud-update-many.decorator.d.ts","sourceRoot":"","sources":["../../src/decorators/crud-update-many.decorator.ts"],"names":[],"mappings":"AAKA,wBAAgB,cAAc,IAAI,GAAG,CAapC"}
+{"version":3,"file":"crud-update-many.decorator.d.ts","sourceRoot":"","sources":["../../src/decorators/crud-update-many.decorator.ts"],"names":[],"mappings":"AAKA,wBAAgB,cAAc,IAAI,GAAG,CAcpC"}
